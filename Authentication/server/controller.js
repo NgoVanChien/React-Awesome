@@ -170,4 +170,3 @@ export const getProductsController = async (req) => {
     return { ...error, response: error.error };
   }
 };
-s;
