@@ -15,4 +15,4 @@ export default function Navigator() {
   return <div>Navigator {user?.name}</div>;
 }
 
-// Edit : useCustom Hook
+//  useCustom Hook
