@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { Todo } from '../../@types/todo.type'
 import styles from './taskInput.module.scss'
 import { TodoTypes } from '../../PropTypes/todo.propype'
+import connect from '../../HOC/connect'
+import { debug, log } from '../../constants'
 
 interface TaskInputProps {
   addTodo: (name: string) => void
@@ -11,10 +13,10 @@ interface TaskInputProps {
   finishEditTodo: () => void
 }
 
-export default function TaskInput(props: TaskInputProps) {
-  const { addTodo, currentTodo, editTodo, finishEditTodo } = props
+function TaskInput(props: TaskInputProps & typeof injectedProps) {
+  const { addTodo, currentTodo, editTodo, finishEditTodo, debug, log } = props
   const [name, setName] = useState<string>('')
-
+  log(debug)
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (currentTodo) {
@@ -57,3 +59,5 @@ TaskInput.propTypes = {
   finishEditTodo: PropTypes.func.isRequired,
   currentTodo: PropTypes.oneOfType([TodoTypes, PropTypes.oneOf([null])])
 }
+const injectedProps = { debug: debug, log: log }
+export default connect(injectedProps)(TaskInput)
