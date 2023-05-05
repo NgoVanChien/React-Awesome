@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Todo } from '../../@types/todo.type'
 import styles from './taskInput.module.scss'
@@ -21,7 +21,7 @@ function TaskInput(props: TaskInputProps & typeof injectedProps) {
 
   const address = useMemo(() => {
     return { street: '10 Tran Hung Dao' }
-  }, [currentTodo])
+  }, [])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -43,9 +43,13 @@ function TaskInput(props: TaskInputProps & typeof injectedProps) {
     }
   }
 
+  const handleClick = useCallback((value: any) => {
+    console.log(value)
+  }, [])
+
   return (
     <div className='mb-2'>
-      <Title address={address} />
+      <Title address={address} handleClick={handleClick} />
       <form className={styles.form} onSubmit={handleSubmit}>
         <input
           type='text'

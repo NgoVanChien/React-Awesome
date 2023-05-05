@@ -5,10 +5,12 @@ type TitleProps = {
   address: {
     street: string
   }
+  handleClick: (value: any) => void
 }
 
 function Title(props: TitleProps) {
-  console.log(props.address)
+  //   console.log(props.address)
+  console.log(props)
   return <h1 className={styles.title}>To do list typescript</h1>
 }
 
