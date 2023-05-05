@@ -43,8 +43,12 @@ function TaskInput(props: TaskInputProps & typeof injectedProps) {
     }
   }
 
-  const handleClick = useCallback((value: any) => {
-    console.log(value)
+  // const handleClick = useCallback((value: any) => {
+  //   console.log(value)
+  // }, [])
+
+  const handleClick = useMemo(() => {
+    return (value: any) => console.log(value)
   }, [])
 
   return (

@@ -11,7 +11,11 @@ type TitleProps = {
 function Title(props: TitleProps) {
   //   console.log(props.address)
   console.log(props)
-  return <h1 className={styles.title}>To do list typescript</h1>
+  return (
+    <h1 className={styles.title} onClick={() => props.handleClick(100)}>
+      To do list typescript
+    </h1>
+  )
 }
 
 function equal(prevProp: TitleProps, nextProps: TitleProps) {
