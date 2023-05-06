@@ -48,8 +48,10 @@ interface ActiveSlideProps {
   }
   naturalActiveImageRef: React.RefObject<HTMLImageElement>
 }
+// ==> forwardRef
 
 const ActiveSlide = React.memo(
+  // ==> forwardRef
   React.forwardRef((props: ActiveSlideProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const { handleZoom, handleRemoveZoom, activeSlide, naturalActiveImageRef } = props
     return (
