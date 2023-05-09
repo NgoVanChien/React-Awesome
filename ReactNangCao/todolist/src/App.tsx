@@ -4,6 +4,7 @@ import Watch from './components/Watch'
 import Slider from './components/Slider'
 import Count from './components/Count'
 import Counter from './components/Counter'
+import Welcome from './components/Welcome'
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
       {/* <TodoList /> */}
       {/* <Slider /> */}
       {/* <Count /> */}
-      <Counter />
+      {/* <Counter /> */}
+      <Welcome />
     </div>
   )
 }
