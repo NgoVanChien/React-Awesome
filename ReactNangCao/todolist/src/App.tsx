@@ -7,6 +7,8 @@ import Counter from './components/Counter'
 import Welcome from './components/Welcome'
 import AutoInput from './components/AutoInput/AutoInput'
 import ProductList from './components/ProductList'
+import Manager from './components/Manager'
+import MainLayout from './layouts/MainLayout'
 
 function App() {
   return (
@@ -18,7 +20,10 @@ function App() {
       {/* <Counter /> */}
       {/* <Welcome /> */}
       {/* <AutoInput /> */}
-      <ProductList />
+      {/* <ProductList /> */}
+      <MainLayout>
+        <Manager />
+      </MainLayout>
     </div>
   )
 }
