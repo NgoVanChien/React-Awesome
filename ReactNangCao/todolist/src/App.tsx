@@ -5,6 +5,7 @@ import Slider from './components/Slider'
 import Count from './components/Count'
 import Counter from './components/Counter'
 import Welcome from './components/Welcome'
+import AutoInput from './components/AutoInput/AutoInput'
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
       {/* <Slider /> */}
       {/* <Count /> */}
       {/* <Counter /> */}
-      <Welcome />
+      {/* <Welcome /> */}
+      <AutoInput />
     </div>
   )
 }
