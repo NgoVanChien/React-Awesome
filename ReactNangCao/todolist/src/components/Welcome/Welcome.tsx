@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import React, { createContext, useCallback, useContext, useId, useMemo, useState } from 'react'
 import './welcome.css'
 
 interface ThemeType {
@@ -41,19 +41,21 @@ export default function Welcome() {
 }
 
 const Label = React.memo(() => {
-  console.log('Lable Re-Render')
+  //   console.log('Lable Re-Render')
   const { theme, onChangeTheme } = useContext(ThemContext)
+  const id = useId()
   return (
-    <label>
+    <div>
       <input
         type='checkbox'
         checked={theme.color === 'dark'}
         onChange={(e) => {
           onChangeTheme(e.target.checked ? 'dark' : 'light')
         }}
+        id={id}
       />
-      Use Dark Mode
-    </label>
+      <label htmlFor={id}>Use Dark Mode</label>
+    </div>
   )
 })
 
