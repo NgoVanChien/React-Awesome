@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useId, useMemo, useState } from 'react'
+import React, { createContext, useCallback, useContext, useDebugValue, useId, useMemo, useState } from 'react'
 import './welcome.css'
 
 interface ThemeType {
@@ -15,14 +15,28 @@ const ThemContext = createContext<ThemeType>({
   onChangeTheme: () => {}
 })
 
-export default function Welcome() {
-  const [theme, setThem] = useState<ThemeType['theme']>({ color: 'light' })
-  const [, forceRender] = useState({})
+const doTask = (value: any) => {
+  for (let i = 0; i < 99999; i++) {}
+  return value === 'light' ? 'theme is light' : 'theme is dark'
+}
 
+// Custum Hook
+const useTheme = () => {
+  const [theme, setThem] = useState<ThemeType['theme']>({ color: 'light' })
   const onChangeTheme = useCallback((color: 'light' | 'dark') => {
     setThem((prev) => ({ ...prev, color }))
   }, [])
 
+  useDebugValue(theme.color, doTask)
+  return {
+    theme,
+    onChangeTheme
+  }
+}
+
+export default function Welcome() {
+  const [, forceRender] = useState({})
+  const { theme, onChangeTheme } = useTheme()
   const valueContext = useMemo(() => {
     return { theme, onChangeTheme }
   }, [theme, onChangeTheme])
