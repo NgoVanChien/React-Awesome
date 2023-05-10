@@ -6,6 +6,7 @@ import Count from './components/Count'
 import Counter from './components/Counter'
 import Welcome from './components/Welcome'
 import AutoInput from './components/AutoInput/AutoInput'
+import ProductList from './components/ProductList'
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
       {/* <Count /> */}
       {/* <Counter /> */}
       {/* <Welcome /> */}
-      <AutoInput />
+      {/* <AutoInput /> */}
+      <ProductList />
     </div>
   )
 }
