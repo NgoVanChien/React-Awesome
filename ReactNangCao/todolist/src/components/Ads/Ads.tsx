@@ -1,7 +1,7 @@
 import websiteUI from '../../images/learning-website-ui.png'
-// import { withMouseTracker } from '../MouseTracker/MouseTracker'
+import { withMouseTracker } from '../MouseTracker/MouseTracker'
 
-export default function Ads({ x, y }: { x: number; y: number }) {
+function Ads({ x, y, visible }: { x: number; y: number; visible: boolean }) {
   return (
     <div>
       <img src={websiteUI} alt='website ui' style={{ width: '100rem', height: 'auto' }} />
@@ -14,4 +14,4 @@ export default function Ads({ x, y }: { x: number; y: number }) {
   )
 }
 
-// export default withMouseTracker(Ads)
+export default withMouseTracker(Ads)

@@ -31,8 +31,8 @@ function App() {
       {/* <MouseTracker>{(value) => <Ads {...value} />}</MouseTracker> */}
       {/* <MouseTracker render={(value) => <Ads {...value} />} />
     </div> */}
-      <MouseTracker render={(value) => <Ads {...value} />} />
-      {/* <Ads visible /> */}
+      {/* <MouseTracker render={(value) => <Ads {...value} />} /> */}
+      <Ads visible />
     </div>
   )
 }
