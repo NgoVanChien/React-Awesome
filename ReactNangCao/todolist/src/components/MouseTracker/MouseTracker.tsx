@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import Ads from '../Ads'
 
-interface PositionType {
+export interface PositionType {
   x: number
   y: number
 }
 
-export default function MouseTracker({ render }: { render: (value: PositionType) => JSX.Element }) {
+function MouseTracker({ render }: { render: (value: PositionType) => JSX.Element }) {
   const [position, setPosition] = useState<PositionType>({ x: 0, y: 0 })
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setPosition({
@@ -14,6 +14,9 @@ export default function MouseTracker({ render }: { render: (value: PositionType)
       y: event.clientY
     })
   }
+
+  console.log('handleMouseMove')
+
   return (
     <div onMouseMove={handleMouseMove}>
       <p style={{ color: 'red' }}>Mouse Tracker</p>
@@ -21,6 +24,7 @@ export default function MouseTracker({ render }: { render: (value: PositionType)
     </div>
   )
 }
+export default React.memo(MouseTracker)
 
 export function withMouseTracker<T>(Component: React.ComponentType<T & PositionType>) {
   return function (props: Omit<T, keyof PositionType>) {

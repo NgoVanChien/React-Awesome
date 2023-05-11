@@ -23,6 +23,7 @@ const doTask = (value: any) => {
 // Custum Hook
 const useTheme = () => {
   const [theme, setThem] = useState<ThemeType['theme']>({ color: 'light' })
+  // useCallback
   const onChangeTheme = useCallback((color: 'light' | 'dark') => {
     setThem((prev) => ({ ...prev, color }))
   }, [])
@@ -37,6 +38,7 @@ const useTheme = () => {
 export default function Welcome() {
   const [, forceRender] = useState({})
   const { theme, onChangeTheme } = useTheme()
+  // useMemo
   const valueContext = useMemo(() => {
     return { theme, onChangeTheme }
   }, [theme, onChangeTheme])

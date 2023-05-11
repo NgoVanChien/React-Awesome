@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import TodoList from './components/TodoList'
 import Watch from './components/Watch'
 import Slider from './components/Slider'
@@ -11,8 +11,19 @@ import Manager from './components/Manager'
 import MainLayout from './layouts/MainLayout'
 import MouseTracker from './components/MouseTracker'
 import Ads from './components/Ads'
+import { PositionType } from './components/MouseTracker/MouseTracker'
+
+// const renderAds = (value: PositionType) => <Ads {...value} visible />
 
 function App() {
+  const [, render] = useState({})
+  // const renederAds = useCallback((value: PositionType) => <Ads {...value} visible />, [])
+  // const renderAds = useMemo(() => {
+  //   return (value: PositionType) => <Ads {...value} visible />
+  // }, [])
+
+  const renderRef = useRef<any>((value: PositionType) => <Ads {...value} visible />)
+
   return (
     <div>
       {/* <Watch /> */}
@@ -31,8 +42,14 @@ function App() {
       {/* <MouseTracker>{(value) => <Ads {...value} />}</MouseTracker> */}
       {/* <MouseTracker render={(value) => <Ads {...value} />} />
     </div> */}
-      {/* <MouseTracker render={(value) => <Ads {...value} />} /> */}
-      <Ads visible />
+      <div>
+        <button onClick={() => render({})}>Force Rerender</button>
+      </div>
+      {/* <MouseTracker render={renderAds} /> */}
+      {/* line use" Callback "and "useMemo" and" use funntion outside" */}
+      4 cách trên dùng đễ Memory Component, Memoization của React
+      <MouseTracker render={renderRef.current} />
+      {/* <Ads visible/> */}
     </div>
   )
 }
