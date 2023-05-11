@@ -30,6 +30,15 @@ export default function TodoList() {
     const todosString = localStorage.getItem('todos')
     const todosObj: Todo[] = JSON.parse(todosString || '[]')
     setTodos(todosObj)
+
+    // Lưu ý Error Boundary không bắt được các lỗi
+    // 1.- Code bất đồng bộ
+
+    //   setTimeout(() => {
+    //     let a: any = null
+    //     a.b = 0
+    //   })
+    //   // setTodos(null)
   }, [])
 
   const addTodo = (name: string) => {
@@ -38,6 +47,14 @@ export default function TodoList() {
       done: false,
       id: new Date().toISOString()
     }
+    // 3. - Event handler
+    // 4. - Server side rendering
+    // try {
+    //   let a: any = null
+    //   a.b = 0
+    // } catch (error) {
+    //   console.log('Loi roi')
+    // }
     setTodos((prev) => [...prev, todo])
     const handler = (todosObj: Todo[]) => {
       return [...todosObj, todo]

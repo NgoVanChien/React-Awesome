@@ -13,6 +13,7 @@ import MouseTracker from './components/MouseTracker'
 import Ads from './components/Ads'
 import { PositionType } from './components/MouseTracker/MouseTracker'
 import Users from './components/Users'
+import ErrorBoundary from './components/ErrorBoundary'
 
 // const renderAds = (value: PositionType) => <Ads {...value} visible />
 
@@ -29,7 +30,7 @@ function App() {
   return (
     <div>
       {/* <Watch /> */}
-      {/* <TodoList /> */}
+      <TodoList />
       {/* <Slider /> */}
       {/* <Count /> */}
       {/* <Counter /> */}
@@ -52,10 +53,11 @@ function App() {
       {/* 4 cách trên dùng đễ Memory Component, Memoization của React */}
       {/* <MouseTracker render={renderRef.current} /> */}
       {/* <Ads visible/> */}
-      <div>
+      {/* <div>
         <button onClick={() => setVisible((prev) => !prev)}>Change visible</button>
       </div>
-      {visible && <Users />}
+      {visible && <Users />} */}
+      {/* <ErrorBoundary /> */}
     </div>
   )
 }
