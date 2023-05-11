@@ -12,17 +12,19 @@ import MainLayout from './layouts/MainLayout'
 import MouseTracker from './components/MouseTracker'
 import Ads from './components/Ads'
 import { PositionType } from './components/MouseTracker/MouseTracker'
+import Users from './components/Users'
 
 // const renderAds = (value: PositionType) => <Ads {...value} visible />
 
 function App() {
-  const [, render] = useState({})
+  const [visible, setVisible] = useState(true)
+  // const [, render] = useState({})
   // const renederAds = useCallback((value: PositionType) => <Ads {...value} visible />, [])
   // const renderAds = useMemo(() => {
   //   return (value: PositionType) => <Ads {...value} visible />
   // }, [])
 
-  const renderRef = useRef<any>((value: PositionType) => <Ads {...value} visible />)
+  // const renderRef = useRef<any>((value: PositionType) => <Ads {...value} visible />)
 
   return (
     <div>
@@ -42,14 +44,18 @@ function App() {
       {/* <MouseTracker>{(value) => <Ads {...value} />}</MouseTracker> */}
       {/* <MouseTracker render={(value) => <Ads {...value} />} />
     </div> */}
-      <div>
+      {/* <div>
         <button onClick={() => render({})}>Force Rerender</button>
-      </div>
+      </div> */}
       {/* <MouseTracker render={renderAds} /> */}
       {/* line use" Callback "and "useMemo" and" use funntion outside" */}
-      4 cách trên dùng đễ Memory Component, Memoization của React
-      <MouseTracker render={renderRef.current} />
+      {/* 4 cách trên dùng đễ Memory Component, Memoization của React */}
+      {/* <MouseTracker render={renderRef.current} /> */}
       {/* <Ads visible/> */}
+      <div>
+        <button onClick={() => setVisible((prev) => !prev)}>Change visible</button>
+      </div>
+      {visible && <Users />}
     </div>
   )
 }
