@@ -6,7 +6,7 @@ interface PositionType {
   y: number
 }
 
-export default function MouseTracker() {
+export default function MouseTracker({ render }: { render: (value: PositionType) => JSX.Element }) {
   const [position, setPosition] = useState<PositionType>({ x: 0, y: 0 })
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setPosition({
@@ -17,7 +17,25 @@ export default function MouseTracker() {
   return (
     <div onMouseMove={handleMouseMove}>
       <p style={{ color: 'red' }}>Mouse Tracker</p>
-      <Ads {...position} />
+      {render(position)}
     </div>
   )
 }
+
+// export function withMouseTracker<T>(Component: React.ComponentType<T & PositionType>) {
+//   return function (props: Omit<T, keyof PositionType>) {
+//     const [position, setPosition] = useState<PositionType>({ x: 0, y: 0 })
+//     const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+//       setPosition({
+//         x: event.clientX,
+//         y: event.clientY
+//       })
+//     }
+//     return (
+//       <div onMouseMove={handleMouseMove}>
+//         <p style={{ color: 'red' }}>Mouse Tracker</p>
+//         <Component {...(props as T)} {...position} />
+//       </div>
+//     )
+//   }
+// }

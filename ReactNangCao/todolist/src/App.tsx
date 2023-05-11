@@ -10,6 +10,7 @@ import ProductList from './components/ProductList'
 import Manager from './components/Manager'
 import MainLayout from './layouts/MainLayout'
 import MouseTracker from './components/MouseTracker'
+import Ads from './components/Ads'
 
 function App() {
   return (
@@ -25,7 +26,13 @@ function App() {
       {/* <MainLayout>
         <Manager />
       </MainLayout> */}
-      <MouseTracker />
+      {/* <MouseTracker children={(value) => <Ads x={value.x} y={value.y} />} /> */}
+      {/* <MouseTracker children={(value) => <Ads {...value} />} /> */}
+      {/* <MouseTracker>{(value) => <Ads {...value} />}</MouseTracker> */}
+      {/* <MouseTracker render={(value) => <Ads {...value} />} />
+    </div> */}
+      <MouseTracker render={(value) => <Ads {...value} />} />
+      {/* <Ads visible /> */}
     </div>
   )
 }

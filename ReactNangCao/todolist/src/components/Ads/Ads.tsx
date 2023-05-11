@@ -1,4 +1,5 @@
 import websiteUI from '../../images/learning-website-ui.png'
+// import { withMouseTracker } from '../MouseTracker/MouseTracker'
 
 export default function Ads({ x, y }: { x: number; y: number }) {
   return (
