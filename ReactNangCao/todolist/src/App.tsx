@@ -9,6 +9,7 @@ import AutoInput from './components/AutoInput/AutoInput'
 import ProductList from './components/ProductList'
 import Manager from './components/Manager'
 import MainLayout from './layouts/MainLayout'
+import MouseTracker from './components/MouseTracker'
 
 function App() {
   return (
@@ -21,9 +22,10 @@ function App() {
       {/* <Welcome /> */}
       {/* <AutoInput /> */}
       {/* <ProductList /> */}
-      <MainLayout>
+      {/* <MainLayout>
         <Manager />
-      </MainLayout>
+      </MainLayout> */}
+      <MouseTracker />
     </div>
   )
 }
