@@ -15,7 +15,7 @@ const syncReactToLocal = (handleNewTodos: HandleNewTodos) => {
   const todosString = localStorage.getItem('todos')
   const todosObj: Todo[] = JSON.parse(todosString || '[]')
   // const newTodosObj = [...todosObj, todo] // Before
-  const newTodosObj = handleNewTodos(todosObj) // After
+  const newTodosObj = handleNewTodos(todosObj)
   localStorage.setItem('todos', JSON.stringify(newTodosObj))
 }
 
@@ -45,15 +45,31 @@ export default function TodoList() {
     syncReactToLocal(handler)
   }
 
+  // Before
+
+  // After
+
+  // const addTodo = (name: string) => {
+  //   const todo: Todo = {
+  //     name,
+  //     done: false,
+  //     id: new Date().toISOString()
+  //   }
+  //   setTodos((prev) => [...prev, todo])
+  //   syncReactToLocal((todosObj: Todo[]) => [...todosObj, todo])
+  // }
+
   const handleDoneTodo = (id: string, done: boolean) => {
-    setTodos((prev) => {
-      return prev.map((todo) => {
+    const handler = (todosObj: Todo[]) => {
+      return todosObj.map((todo) => {
         if (todo.id === id) {
           return { ...todo, done }
         }
         return todo
       })
-    })
+    }
+    setTodos(handler)
+    syncReactToLocal(handler)
   }
 
   const startEditTodo = (id: string) => {

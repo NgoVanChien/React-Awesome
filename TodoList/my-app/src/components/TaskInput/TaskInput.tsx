@@ -6,9 +6,9 @@ import { TodoTypes } from '../../PropTypes/todo.propype'
 
 interface TaskInputProps {
   addTodo: (name: string) => void
-  currentTodo: Todo | null
   editTodo: (name: string) => void
   finishEditTodo: () => void
+  currentTodo: Todo | null
 }
 
 export default function TaskInput(props: TaskInputProps) {
