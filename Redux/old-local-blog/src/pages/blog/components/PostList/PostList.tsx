@@ -3,6 +3,7 @@ import PostItem from '../PostItem'
 import { useSelector } from 'react-redux'
 
 export default function PostList() {
+  // lấy 1 state trong Redux : useSelector()
   const postList = useSelector((state: RootState) => state.blog.postList)
   console.log(postList)
 
