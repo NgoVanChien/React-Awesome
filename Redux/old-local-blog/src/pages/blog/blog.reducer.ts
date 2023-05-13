@@ -12,6 +12,13 @@ const initialState: BlogState = {
 
 export const addPost = createAction<Post>('blog/addPost')
 
-const blogReducer = createReducer(initialState, (buider) => {})
+const blogReducer = createReducer(initialState, (buider) => {
+  buider.addCase(addPost, (state, action) => {
+    // immmerjs
+    // immerrjs giúp mutate 1 state an toàn
+    const post = action.payload
+    state.postList.push(post)
+  })
+})
 
 export default blogReducer
