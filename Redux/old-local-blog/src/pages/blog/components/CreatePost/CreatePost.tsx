@@ -1,4 +1,6 @@
+import { addPost } from 'pages/blog/blog.reducer'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Post } from 'types/blog.type'
 
 const initialState: Post = {
@@ -12,10 +14,14 @@ const initialState: Post = {
 
 export default function CreatePost() {
   const [formData, setFormData] = useState<Post>(initialState)
+  const dispatch = useDispatch()
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log(formData)
+    const formDataWithId = { ...formData, id: new Date().toISOString() }
+    dispatch(addPost(formDataWithId))
   }
+
   return (
     <form onSubmit={handleSubmit}>
       <div className='mb-6'>
@@ -28,6 +34,8 @@ export default function CreatePost() {
           className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
           placeholder='Title'
           required
+          value={formData.title}
+          onChange={(event) => setFormData((prev) => ({ ...prev, title: event.target.value }))}
         />
       </div>
       <div className='mb-6'>
@@ -40,8 +48,8 @@ export default function CreatePost() {
           className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
           placeholder='Url image'
           required
-          value={formData.title}
-          onChange={(event) => setFormData((prev) => ({ ...prev, title: event.target.value }))}
+          value={formData.featuredImage}
+          onChange={(event) => setFormData((prev) => ({ ...prev, featuredImage: event.target.value }))}
         />
       </div>
       <div className='mb-6'>
