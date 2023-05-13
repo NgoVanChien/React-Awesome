@@ -1,6 +1,23 @@
+import { useState } from 'react'
+import { Post } from 'types/blog.type'
+
+const initialState: Post = {
+  id: '',
+  description: '',
+  featuredImage: '',
+  publishDate: '',
+  published: false,
+  title: ''
+}
+
 export default function CreatePost() {
+  const [formData, setFormData] = useState<Post>(initialState)
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    console.log(formData)
+  }
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className='mb-6'>
         <label htmlFor='title' className='mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300'>
           Title
@@ -23,6 +40,8 @@ export default function CreatePost() {
           className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
           placeholder='Url image'
           required
+          value={formData.title}
+          onChange={(event) => setFormData((prev) => ({ ...prev, title: event.target.value }))}
         />
       </div>
       <div className='mb-6'>
@@ -36,7 +55,8 @@ export default function CreatePost() {
             className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
             placeholder='Your description...'
             required
-            defaultValue={''}
+            value={formData.description}
+            onChange={(event) => setFormData((prev) => ({ ...prev, description: event.target.value }))}
           />
         </div>
       </div>
@@ -50,10 +70,18 @@ export default function CreatePost() {
           className='block w-56 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
           placeholder='Title'
           required
+          value={formData.publishDate}
+          onChange={(event) => setFormData((prev) => ({ ...prev, publishDate: event.target.value }))}
         />
       </div>
       <div className='mb-6 flex items-center'>
-        <input id='publish' type='checkbox' className='h-4 w-4 focus:ring-2 focus:ring-blue-500' />
+        <input
+          id='publish'
+          type='checkbox'
+          checked={formData.published}
+          onChange={(event) => setFormData((prev) => ({ ...prev, published: event.target.checked }))}
+          className='h-4 w-4 focus:ring-2 focus:ring-blue-500'
+        />
         <label htmlFor='publish' className='ml-2 text-sm font-medium text-gray-900'>
           Publish
         </label>
@@ -67,7 +95,7 @@ export default function CreatePost() {
             Publish Post
           </span>
         </button>
-        <button
+        {/* <button
           type='submit'
           className='group relative mb-2 mr-2 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-teal-300 to-lime-300 p-0.5 text-sm font-medium text-gray-900 focus:outline-none focus:ring-4 focus:ring-lime-200 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 dark:focus:ring-lime-800'
         >
@@ -82,7 +110,7 @@ export default function CreatePost() {
           <span className='relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-opacity-0 dark:bg-gray-900'>
             Cancel
           </span>
-        </button>
+        </button> */}
       </div>
     </form>
   )
