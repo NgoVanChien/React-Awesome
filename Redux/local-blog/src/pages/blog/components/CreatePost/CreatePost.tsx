@@ -46,7 +46,11 @@ export default function CreatePost() {
   return (
     <form onSubmit={handleSubmit} onReset={handleCancelEditingPost}>
       <div className='mb-6'>
-        <label htmlFor='title' className='mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300'>
+        <label
+          htmlFor='title'
+          className='mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300'
+          onClick={() => dispatch({ type: 'blog/cancellll' })}
+        >
           Title
         </label>
         <input

@@ -16,7 +16,7 @@ const initialState: BlogState = {
 //   return {
 //     payload: {
 //       ...post,
-//       id: nanoid()
+//       id: dnanoid()
 //     }
 //   }
 // })
@@ -69,6 +69,19 @@ const blogSlice = createSlice({
         }
       })
     }
+  },
+  extraReducers(builder) {
+    builder
+      .addMatcher(
+        (action) => action.type.includes('cancel'),
+        (state, action) => {
+          console.log(current(state))
+        }
+      )
+      .addDefaultCase((state, action) => {
+        console.log(`action type: ${action.type}`, current(state))
+      })
+    // `extraReducers` cũng giống `reducers` nhưng nó sẽ không generate ra actions. `extraReducers` cho phép dùng một số tính năng như `addMatcher` hay `addDefaultCase`
   }
 })
 
