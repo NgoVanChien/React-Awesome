@@ -1,4 +1,4 @@
-import { PayloadAction, createAction, createReducer, current, nanoid } from '@reduxjs/toolkit'
+import { PayloadAction, createAction, createReducer, current, nanoid, createSlice } from '@reduxjs/toolkit'
 import { initialPostList } from 'constants/blog'
 import { Post } from 'types/blog.type'
 
@@ -26,6 +26,39 @@ export const startEditingPost = createAction<string>('/blog/startEditingPost')
 export const cancelEditingPost = createAction('/blog/cancelEditingPost')
 export const finishEditingPost = createAction<Post>('/blog/finishEditingPost')
 
+const blogSlice = createSlice({
+  name: 'blog',
+  initialState,
+  reducers: {
+    deletePost: (state, action: PayloadAction<string>) => {
+      const postId = action.payload
+      const foundPostIndex = state.postList.findIndex((post) => post.id === postId)
+      if (foundPostIndex !== -1) {
+        state.postList.splice(foundPostIndex, 1)
+      }
+    },
+    startEditingPost: (state, action: PayloadAction<string>) => {
+      const postId = action.payload
+      const foundPost = state.postList.find((post) => post.id === postId) || null
+      state.editingPost = foundPost
+    },
+    cancelEditingPost: (state) => {
+      state.editingPost = null
+    },
+    finishEditingPost: (state, action: PayloadAction<Post>) => {
+      const postId = action.payload.id
+      state.postList.some((post, index) => {
+        if (post.id === postId) {
+          state.postList[index] = action.payload
+          return true
+        }
+        return false
+      })
+      state.editingPost = null
+    }
+  }
+})
+
 const blogReducer = createReducer(initialState, (buider) => {
   buider
     .addCase(addPost, (state, action) => {
@@ -36,7 +69,6 @@ const blogReducer = createReducer(initialState, (buider) => {
     })
     .addCase(deletePost, (state, action) => {
       console.log('before delete', current(state))
-
       const postId = action.payload
       const foundPostIndex = state.postList.findIndex((post) => post.id === postId)
       if (foundPostIndex !== -1) {
