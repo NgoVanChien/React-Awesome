@@ -72,6 +72,13 @@ const blogSlice = createSlice({
   }
 })
 
+// export action được generate ra từ slice
+export const { addPost, cancelEditingPost, deletePost, finishEditingPost, startEditingPost } = blogSlice.actions
+// export reducer được generate ra từ slice
+const blogReducer = blogSlice.reducer
+
+export default blogReducer
+
 // const blogReducer = createReducer(initialState, (buider) => {
 //   buider
 //     .addCase(addPost, (state, action) => {
