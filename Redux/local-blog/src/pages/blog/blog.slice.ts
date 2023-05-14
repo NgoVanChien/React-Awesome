@@ -12,19 +12,19 @@ const initialState: BlogState = {
   editingPost: null
 }
 
-export const addPost = createAction('blog/addPost', function (post: Omit<Post, 'id'>) {
-  return {
-    payload: {
-      ...post,
-      id: nanoid()
-    }
-  }
-})
+// export const addPost = createAction('blog/addPost', function (post: Omit<Post, 'id'>) {
+//   return {
+//     payload: {
+//       ...post,
+//       id: nanoid()
+//     }
+//   }
+// })
 
-export const deletePost = createAction<string>('blog/deletePost')
-export const startEditingPost = createAction<string>('/blog/startEditingPost')
-export const cancelEditingPost = createAction('/blog/cancelEditingPost')
-export const finishEditingPost = createAction<Post>('/blog/finishEditingPost')
+// export const deletePost = createAction<string>('blog/deletePost')
+// export const startEditingPost = createAction<string>('/blog/startEditingPost')
+// export const cancelEditingPost = createAction('/blog/cancelEditingPost')
+// export const finishEditingPost = createAction<Post>('/blog/finishEditingPost')
 
 const blogSlice = createSlice({
   name: 'blog',
@@ -55,59 +55,72 @@ const blogSlice = createSlice({
         return false
       })
       state.editingPost = null
+    },
+    addPost: {
+      reducer: (state, action: PayloadAction<Post>) => {
+        const post = action.payload
+        state.postList.push(post)
+      },
+      // prepare callback sẽ cung cấp ID cho Post không có Id
+      prepare: (post: Omit<Post, 'id'>) => ({
+        payload: {
+          ...post,
+          id: nanoid()
+        }
+      })
     }
   }
 })
 
-const blogReducer = createReducer(initialState, (buider) => {
-  buider
-    .addCase(addPost, (state, action) => {
-      // immmerjs
-      // immerrjs giúp mutate 1 state an toàn
-      const post = action.payload
-      state.postList.push(post)
-    })
-    .addCase(deletePost, (state, action) => {
-      console.log('before delete', current(state))
-      const postId = action.payload
-      const foundPostIndex = state.postList.findIndex((post) => post.id === postId)
-      if (foundPostIndex !== -1) {
-        state.postList.splice(foundPostIndex, 1)
-      }
-      console.log('after delete', current(state))
-    })
-    .addCase(startEditingPost, (state, action) => {
-      const postId = action.payload
-      const foundPost = state.postList.find((post) => post.id === postId) || null
-      state.editingPost = foundPost
-    })
-    .addCase(cancelEditingPost, (state) => {
-      state.editingPost = null
-    })
-    .addCase(finishEditingPost, (state, action) => {
-      const postId = action.payload.id
-      state.postList.some((post, index) => {
-        if (post.id === postId) {
-          state.postList[index] = action.payload
-          return true
-        }
-        return false
-      })
-      state.editingPost = null
-    })
-    .addMatcher(
-      (action) => action.type.includes('cancel'),
-      (state, action) => {
-        console.log(current(state))
-      }
-    )
-  // // addMatcher cho phép chúng ta thêm "matcher function"
-  //   // nếu "matcher function" return true thì nó sẽ nhảy vào case này
-  //   .addMatcher(isActionWithNumberPayload, (state, action) => {})
-  //   // nếu muốn thêm default case khi không match case nào cả
-  //   // thì dùng addDefaultCase
-  //   >>.addDefaultCase((state, action) => {});
-})
+// const blogReducer = createReducer(initialState, (buider) => {
+//   buider
+//     .addCase(addPost, (state, action) => {
+//       // immmerjs
+//       // immerrjs giúp mutate 1 state an toàn
+//       const post = action.payload
+//       state.postList.push(post)
+//     })
+//     .addCase(deletePost, (state, action) => {
+//       console.log('before delete', current(state))
+//       const postId = action.payload
+//       const foundPostIndex = state.postList.findIndex((post) => post.id === postId)
+//       if (foundPostIndex !== -1) {
+//         state.postList.splice(foundPostIndex, 1)
+//       }
+//       console.log('after delete', current(state))
+//     })
+//     .addCase(startEditingPost, (state, action) => {
+//       const postId = action.payload
+//       const foundPost = state.postList.find((post) => post.id === postId) || null
+//       state.editingPost = foundPost
+//     })
+//     .addCase(cancelEditingPost, (state) => {
+//       state.editingPost = null
+//     })
+//     .addCase(finishEditingPost, (state, action) => {
+//       const postId = action.payload.id
+//       state.postList.some((post, index) => {
+//         if (post.id === postId) {
+//           state.postList[index] = action.payload
+//           return true
+//         }
+//         return false
+//       })
+//       state.editingPost = null
+//     })
+//     .addMatcher(
+//       (action) => action.type.includes('cancel'),
+//       (state, action) => {
+//         console.log(current(state))
+//       }
+//     )
+//   // // addMatcher cho phép chúng ta thêm "matcher function"
+//   //   // nếu "matcher function" return true thì nó sẽ nhảy vào case này
+//   //   .addMatcher(isActionWithNumberPayload, (state, action) => {})
+//   //   // nếu muốn thêm default case khi không match case nào cả
+//   //   // thì dùng addDefaultCase
+//   //   >>.addDefaultCase((state, action) => {});
+// })
 
 // const blogReducer = createReducer(
 //   initialState,
@@ -162,4 +175,4 @@ const blogReducer = createReducer(initialState, (buider) => {
 //   }
 // )
 
-export default blogReducer
+// export default blogReducer
