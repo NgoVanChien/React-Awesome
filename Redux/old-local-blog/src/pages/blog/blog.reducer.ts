@@ -69,43 +69,57 @@ export const finishEditingPost = createAction<Post>('/blog/finishEditingPost')
 //   //   >>.addDefaultCase((state, action) => {});
 // })
 
-const blogReducer = createReducer(initialState, {
-  [addPost.type]: (state, action: PayloadAction<Post>) => {
-    // immmerjs
-    // immerrjs giúp mutate 1 state an toàn
-    const post = action.payload
-    state.postList.push(post)
-  },
-  [deletePost.type]: (state, action) => {
-    console.log('before delete', current(state))
+const blogReducer = createReducer(
+  initialState,
+  {
+    [addPost.type]: (state, action: PayloadAction<Post>) => {
+      // immmerjs
+      // immerrjs giúp mutate 1 state an toàn
+      const post = action.payload
+      state.postList.push(post)
+    },
+    [deletePost.type]: (state, action) => {
+      console.log('before delete', current(state))
 
-    const postId = action.payload
-    const foundPostIndex = state.postList.findIndex((post) => post.id === postId)
-    if (foundPostIndex !== -1) {
-      state.postList.splice(foundPostIndex, 1)
-    }
-    console.log('after delete', current(state))
-  },
-  [startEditingPost.type]: (state, action) => {
-    const postId = action.payload
-    const foundPost = state.postList.find((post) => post.id === postId) || null
-    state.editingPost = foundPost
-  },
-  [cancelEditingPost.type]: (state) => {
-    state.editingPost = null
-  },
-
-  [finishEditingPost.type]: (state, action) => {
-    const postId = action.payload.id
-    state.postList.some((post, index) => {
-      if (post.id === postId) {
-        state.postList[index] = action.payload
-        return true
+      const postId = action.payload
+      const foundPostIndex = state.postList.findIndex((post) => post.id === postId)
+      if (foundPostIndex !== -1) {
+        state.postList.splice(foundPostIndex, 1)
       }
-      return false
-    })
-    state.editingPost = null
+      console.log('after delete', current(state))
+    },
+    [startEditingPost.type]: (state, action) => {
+      const postId = action.payload
+      const foundPost = state.postList.find((post) => post.id === postId) || null
+      state.editingPost = foundPost
+    },
+    [cancelEditingPost.type]: (state) => {
+      state.editingPost = null
+    },
+
+    [finishEditingPost.type]: (state, action) => {
+      const postId = action.payload.id
+      state.postList.some((post, index) => {
+        if (post.id === postId) {
+          state.postList[index] = action.payload
+          return true
+        }
+        return false
+      })
+      state.editingPost = null
+    }
+  },
+  [
+    {
+      matcher: ((action: any) => action.type.includes('cancel')) as any,
+      reducer(state, action) {
+        console.log(current(state))
+      }
+    }
+  ],
+  (state) => {
+    console.log(state)
   }
-})
+)
 
 export default blogReducer
