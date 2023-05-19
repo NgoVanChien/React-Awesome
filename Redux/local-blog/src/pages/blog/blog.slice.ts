@@ -8,7 +8,7 @@ interface BlogState {
 }
 
 const initialState: BlogState = {
-  postList: initialPostList,
+  postList: [],
   editingPost: null
 }
 
@@ -72,6 +72,9 @@ const blogSlice = createSlice({
   },
   extraReducers(builder) {
     builder
+      .addCase('blog/getPostLishSuccess', (state, action: any) => {
+        state.postList = action.payload
+      })
       .addMatcher(
         (action) => action.type.includes('cancel'),
         (state, action) => {
@@ -79,7 +82,7 @@ const blogSlice = createSlice({
         }
       )
       .addDefaultCase((state, action) => {
-        console.log(`action type: ${action.type}`, current(state))
+        // console.log(`action type: ${action.type}`, current(state))
       })
     // `extraReducers` cũng giống `reducers` nhưng nó sẽ không generate ra actions. `extraReducers` cho phép dùng một số tính năng như `addMatcher` hay `addDefaultCase`
   }
