@@ -1,7 +1,7 @@
-import { RootState } from 'store'
+import { RootState, useAppDispatch } from 'store'
 import PostItem from '../PostItem'
 import { useDispatch, useSelector } from 'react-redux'
-import { deletePost, startEditingPost } from 'pages/blog/blog.slice'
+import { deletePost, getPostList, startEditingPost } from 'pages/blog/blog.slice'
 import { useEffect } from 'react'
 import http from 'utils/http'
 
@@ -14,33 +14,12 @@ import http from 'utils/http'
 export default function PostList() {
   // lấy 1 state trong Redux : useSelector()
   const postList = useSelector((state: RootState) => state.blog.postList)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
-    const controller = new AbortController()
-    http
-      .get('posts', {
-        signal: controller.signal
-      })
-      .then((res) => {
-        console.log(res)
-        const postListResult = res.data
-        dispatch({
-          type: 'blog/getPostListSuccess',
-          payload: postListResult
-        })
-      })
-      .catch((error) => {
-        if (!(error.code === 'ERR_CANCELED')) {
-          dispatch({
-            type: 'blog/getPostListFailed',
-            payload: error
-          })
-        }
-      })
-
+    const promise = dispatch(getPostList())
     return () => {
-      controller.abort()
+      promise.abort()
     }
   }, [dispatch])
 
@@ -55,7 +34,7 @@ export default function PostList() {
     <div className='bg-white py-6 sm:py-8 lg:py-12'>
       <div className='mx-auto max-w-screen-xl px-4 md:px-8'>
         <div className='mb-10 md:mb-16'>
-          <h2 className='mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl'>Galvin Ngô Blog</h2>
+          <h2 className='mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl'>Được Dev Blog</h2>
           <p className='mx-auto max-w-screen-md text-center text-gray-500 md:text-lg'>
             Đừng bao giờ từ bỏ. Hôm nay khó khăn, ngày mai sẽ trở nên tồi tệ. Nhưng ngày mốt sẽ có nắng
           </p>

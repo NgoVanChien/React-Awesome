@@ -1,6 +1,6 @@
-import { PayloadAction, createAction, createReducer, current, nanoid, createSlice } from '@reduxjs/toolkit'
-import { initialPostList } from 'constants/blog'
+import { PayloadAction, current, nanoid, createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { Post } from 'types/blog.type'
+import http from 'utils/http'
 
 interface BlogState {
   postList: Post[]
@@ -8,27 +8,21 @@ interface BlogState {
 }
 
 const initialState: BlogState = {
-  postList: initialPostList,
+  postList: [],
   editingPost: null
 }
 
-// export const addPost = createAction('blog/addPost', function (post: Omit<Post, 'id'>) {
-//   return {
-//     payload: {
-//       ...post,
-//       id: dnanoid()
-//     }
-//   }
-// })
-
-// export const deletePost = createAction<string>('blog/deletePost')
-// export const startEditingPost = createAction<string>('/blog/startEditingPost')
-// export const cancelEditingPost = createAction('/blog/cancelEditingPost')
-// export const finishEditingPost = createAction<Post>('/blog/finishEditingPost')
+export const getPostList = createAsyncThunk('blog/getPostList', async (_, thunkAPI) => {
+  const response = await http.get<Post[]>('posts', {
+    signal: thunkAPI.signal
+  })
+  return response.data
+})
 
 const blogSlice = createSlice({
   name: 'blog',
   initialState,
+  // chỉ xử lý đồng bộ , k xử lý bất đồng bộ
   reducers: {
     deletePost: (state, action: PayloadAction<string>) => {
       const postId = action.payload
@@ -72,6 +66,9 @@ const blogSlice = createSlice({
   },
   extraReducers(builder) {
     builder
+      .addCase(getPostList.fulfilled, (state, action) => {
+        state.postList = action.payload
+      })
       .addMatcher(
         (action) => action.type.includes('cancel'),
         (state, action) => {
