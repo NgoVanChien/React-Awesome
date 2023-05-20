@@ -2,8 +2,9 @@ import { RootState, useAppDispatch } from 'store'
 import PostItem from '../PostItem'
 import { useDispatch, useSelector } from 'react-redux'
 import { deletePost, getPostList, startEditingPost } from 'pages/blog/blog.slice'
-import { useEffect } from 'react'
+import { Fragment, useEffect } from 'react'
 import http from 'utils/http'
+import SkeletonPost from '../SkeletonPost'
 
 // Gọi API trong useEffect()
 // Nếu gọi thành công thì dispatch action type: "blog/getPostListSuccess"
@@ -14,6 +15,8 @@ import http from 'utils/http'
 export default function PostList() {
   // lấy 1 state trong Redux : useSelector()
   const postList = useSelector((state: RootState) => state.blog.postList)
+  const loading = useSelector((state: RootState) => state.blog.loading)
+
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -40,9 +43,16 @@ export default function PostList() {
           </p>
         </div>
         <div className='grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-2 xl:grid-cols-2 xl:gap-8'>
-          {postList.map((post) => (
-            <PostItem post={post} key={post.id} handleDelele={handleDelete} handleStartEditing={handleStartEditing} />
-          ))}
+          {loading && (
+            <Fragment>
+              <SkeletonPost />
+              <SkeletonPost />
+            </Fragment>
+          )}
+          {!loading &&
+            postList.map((post) => (
+              <PostItem post={post} key={post.id} handleDelele={handleDelete} handleStartEditing={handleStartEditing} />
+            ))}
         </div>
       </div>
     </div>
