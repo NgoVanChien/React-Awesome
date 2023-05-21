@@ -19,9 +19,8 @@ export default function CreatePost() {
     event.preventDefault()
 
     // addPost là Promise , để xử lý Promise thì dùng Promise hoặc Async Await
-    const result = await addPost(formData).unwrap()
+    await addPost(formData).unwrap()
     setFormData(initialState)
-    console.log(result)
   }
 
   return (
