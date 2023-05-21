@@ -28,8 +28,21 @@ export const blogApi = createApi({
     // Generic type theo thứ tự là kiểu reponse trả về và argument
     getPosts: build.query<Post[], void>({
       query: () => 'posts' // Method không có argument
+    }),
+    /**
+     * Chúng ta dùng mutation đối với các trường hợp POST, PUT, DELETE
+     Post là response trả về và Omit<Post, 'id'> là body gửi lên
+     */
+    addPost: build.mutation<Post, Omit<Post, 'id'>>({
+      query(body) {
+        return {
+          url: 'posts',
+          method: 'POST',
+          body
+        }
+      }
     })
   })
 })
 
-export const { useGetPostsQuery } = blogApi
+export const { useGetPostsQuery, useAddPostMutation } = blogApi
