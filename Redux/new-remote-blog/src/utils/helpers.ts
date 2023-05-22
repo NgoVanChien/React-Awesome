@@ -26,7 +26,6 @@ interface EntityError {
  */
 
 /**
- *    1
  * Thu hẹp một error có kiểu không xác định về `FetchBaseQueryError`
  */
 
@@ -35,9 +34,7 @@ export function isFetchBaseQueryError(error: unknown): error is FetchBaseQueryEr
 }
 
 /**
- *   2
- * Thu hẹp một error có kiểu không xác định về một object với thuộc tính message: string
- * (SerializedError)
+ * Thu hẹp một error có kiểu không xác định về một object với thuộc tính message: string (SerializedError)
  */
 
 export function isErrorWithMessage(error: unknown): error is { message: string } {

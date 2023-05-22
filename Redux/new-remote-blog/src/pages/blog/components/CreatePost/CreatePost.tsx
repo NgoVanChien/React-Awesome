@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { useAddPostMutation, useGetPostQuery, useUpdatePostMutation } from 'pages/blog/blog.service'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -46,8 +47,9 @@ export default function CreatePost() {
     if (isEntityError(errorResult)) {
       // Có thể ép kiểu một cách an toàn chỗ này, vì chúng ta đã kiểm tra chắc chắn rồi
       // Nếu không muốn ép kiểu thì có thể khai báo cái interface `EntityError` sao cho data.error tương đồng với FormError là được
-      return errorResult.data.error
+      return errorResult.data.error as FormError
     }
+    return null
   }, [postId, updatePostResult, addPostResult])
 
   useEffect(() => {
@@ -55,20 +57,24 @@ export default function CreatePost() {
       setFormData(data)
     }
   }, [data])
-  console.log(data)
+  // console.log(data)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     // addPost là Promise , để xử lý Promise thì dùng Promise hoặc Async Await
-    if (postId) {
-      await updatePost({
-        body: formData as Post,
-        id: postId
-      }).unwrap()
-    } else {
-      await addPost(formData).unwrap()
+    try {
+      if (postId) {
+        await updatePost({
+          body: formData as Post,
+          id: postId
+        }).unwrap()
+      } else {
+        await addPost(formData).unwrap()
+      }
+      setFormData(initialState)
+    } catch (error) {
+      console.log(error)
     }
-    setFormData(initialState)
   }
 
   return (
@@ -118,13 +124,28 @@ export default function CreatePost() {
         </div>
       </div>
       <div className='mb-6'>
-        <label htmlFor='publishDate' className='mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300'>
+        <label
+          htmlFor='publishDate'
+          className={classNames('mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300', {
+            'text-red-700': Boolean(errorForm?.publishDate),
+            'text-gray-900': !Boolean(errorForm?.publishDate)
+          })}
+        >
           Publish Date
         </label>
         <input
           type='datetime-local'
           id='publishDate'
-          className='block w-56 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500'
+          className={classNames(
+            'block w-56 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500',
+            {
+              'border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-blue-500':
+                Boolean(errorForm?.publishDate),
+              'border-gray-300 bg-gray-50 text-gray-900 focus:border-blue-500 focus:ring-blue-500': Boolean(
+                errorForm?.publishDate
+              )
+            }
+          )}
           required
           value={formData.publishDate}
           onChange={(event) => setFormData((prev) => ({ ...prev, publishDate: event.target.value }))}
