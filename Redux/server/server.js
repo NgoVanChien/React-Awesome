@@ -19,8 +19,13 @@ server.use((req, res, next) => {
     if (new Date(req.body.publishDate).getTime() < new Date().getTime()) {
       return res.status(422).send({
         error: {
-          publishDate: "Khong duoc publish vao thoi diem trong qua khu",
+          publishDate: "Không được publish vào thời điểm trong quá khứ",
         },
+      });
+    }
+    if (req.body.title === "admin") {
+      return res.status(500).send({
+        error: "Server bị lỗi",
       });
     }
   }
