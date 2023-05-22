@@ -3,6 +3,7 @@ import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { Post } from 'types/blog.type'
+import { isEntityError } from 'utils/helpers'
 
 const initialState: Omit<Post, 'id'> = {
   title: '',
@@ -38,17 +39,16 @@ export default function CreatePost() {
    * Vì errorForm phụ thuộc vào `addPostResult`, `updatePostResult` và `postId` nên có thể dùng một biến để tính toán
    */
 
-  // const errorForm: FormError = useMemo(() => {
-  //   const errorResult = postId ? updatePostResult.error : addPostResult.error
-  //   // Vì errorResult có thể là FetchBaseQueryError | SerializedError | undefined, mỗi kiểu lại có cấu trúc khác nhau
-  //   // nên chúng ta cần kiểm tra để hiển thị cho đúng
-  //   if (isEntityError(errorResult)) {
-  //     // Có thể ép kiểu một cách an toàn chỗ này, vì chúng ta đã kiểm tra chắc chắn rồi
-  //     // Nếu không muốn ép kiểu thì có thể khai báo cái interface `EntityError` sao cho data.error tương đồng với FormError là được
-  //     return errorResult.data.error as FormError
-  //   }
-  //   // return null
-  // }, [postId, updatePostResult, addPostResult])
+  const errorForm: FormError = useMemo(() => {
+    const errorResult = postId ? updatePostResult.error : addPostResult.error
+    // Vì errorResult có thể là FetchBaseQueryError | SerializedError | undefined, mỗi kiểu lại có cấu trúc khác nhau
+    // nên chúng ta cần kiểm tra để hiển thị cho đúng
+    if (isEntityError(errorResult)) {
+      // Có thể ép kiểu một cách an toàn chỗ này, vì chúng ta đã kiểm tra chắc chắn rồi
+      // Nếu không muốn ép kiểu thì có thể khai báo cái interface `EntityError` sao cho data.error tương đồng với FormError là được
+      return errorResult.data.error
+    }
+  }, [postId, updatePostResult, addPostResult])
 
   useEffect(() => {
     if (data) {
