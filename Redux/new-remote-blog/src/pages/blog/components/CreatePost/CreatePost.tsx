@@ -1,5 +1,7 @@
-import { useAddPostMutation } from 'pages/blog/blog.service'
-import { useState } from 'react'
+import { useAddPostMutation, useGetPostQuery } from 'pages/blog/blog.service'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { RootState } from 'store'
 import { Post } from 'types/blog.type'
 
 const initialState: Omit<Post, 'id'> = {
@@ -14,6 +16,15 @@ export default function CreatePost() {
   const [formData, setFormData] = useState<Omit<Post, 'id'>>(initialState)
   const [addPost, addPostResult] = useAddPostMutation()
   // add là 1 function, addPostrResult là 1 object
+  const postId = useSelector((state: RootState) => state.blog.postId)
+  const { data } = useGetPostQuery(postId, { skip: !postId })
+
+  useEffect(() => {
+    if (data) {
+      setFormData(data)
+    }
+  }, [data])
+  console.log(data)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
