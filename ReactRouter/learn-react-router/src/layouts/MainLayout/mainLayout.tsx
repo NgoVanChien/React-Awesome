@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 interface Props {
   children?: React.ReactNode
 }
@@ -10,31 +10,41 @@ export default function MainLayout({ children }: Props) {
         <div className='h-full overflow-y-auto bg-gray-100 px-3 py-4 shadow-lg'>
           <ul className='space-y-2'>
             <li>
-              <Link
+              <NavLink
                 to='/'
-                replace
-                className='flex items-center rounded-lg bg-gray-300 p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+                // style={({ isActive }) => ({
+                //   fontWeight: isActive ? 800 : undefined
+                // })}
+                className={({ isActive }) => {
+                  const activeClass = isActive ? 'bg-gray-300' : ''
+                  return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-gray-300`
+                }}
               >
-                <span className='ml-3 font-bold'>Dashboard</span>
-              </Link>
+                {({ isActive }) => <span className={`ml-3 ${isActive ? 'font-bold' : ''} `}>Dashboard</span>}
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to='/staff'
-                replace
-                className='flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+                end
+                className={({ isActive }) => {
+                  const activeClass = isActive ? 'bg-gray-300' : ''
+                  return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-gray-300`
+                }}
               >
-                <span className='ml-3'>Staff</span>
-              </Link>
+                {({ isActive }) => <span className={`ml-3 ${isActive ? 'font-bold' : ''} `}>Staff</span>}
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to='/about'
-                replace
-                className='flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
+                className={({ isActive }) => {
+                  const activeClass = isActive ? 'bg-gray-300' : ''
+                  return `flex items-center rounded-lg ${activeClass} p-2 text-base font-normal text-gray-900 hover:bg-gray-300`
+                }}
               >
-                <span className='ml-3'>About</span>
-              </Link>
+                {({ isActive }) => <span className={`ml-3 ${isActive ? 'font-bold' : ''} `}>About</span>}
+              </NavLink>
             </li>
           </ul>
         </div>
