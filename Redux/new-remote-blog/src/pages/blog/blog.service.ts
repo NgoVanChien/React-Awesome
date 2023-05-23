@@ -47,11 +47,19 @@ import { CustomError } from 'utils/helpers'
 export const blogApi = createApi({
   reducerPath: 'blogApi', // Tên field trong Redux State
   tagTypes: ['Posts'], // Những kiểu tag cho phép dùng trong blogApi
+  keepUnusedDataFor: 10,
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:4000/' }),
+  // global configuaration on the api
+  // 2.3. refetch : refetchOnFocus
+  // 2.4. refetch : refetchOnFocus
+  refetchOnFocus: true,
+  refetchOnReconnect: true,
   endpoints: (build) => ({
     // Generic type theo thứ tự là kiểu reponse trả về và argument
     getPosts: build.query<Post[], void>({
       query: () => 'posts', // Method không có argument
+      // 1 Catching
+      // keepUnusedDataFor: 10,
       /**
        * providesTags có thể là array hoặc callback return array
        * Nếu có bất kỳ một invalidatesTag nào match với providesTags này
