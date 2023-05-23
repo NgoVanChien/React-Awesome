@@ -1,7 +1,8 @@
 import classNames from 'classnames'
 import { useAddPostMutation, useGetPostQuery, useUpdatePostMutation } from 'pages/blog/blog.service'
+import { cancleEditPost } from 'pages/blog/blog.slice'
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { Post } from 'types/blog.type'
 import { isEntityError } from 'utils/helpers'
@@ -32,6 +33,7 @@ export default function CreatePost() {
   const { data } = useGetPostQuery(postId, { skip: !postId })
   const [updatePost, updatePostResult] = useUpdatePostMutation()
 
+  const dispatch = useDispatch()
   /**
    * Lỗi có thể đến từ `addPostResult` hoặc `updatePostResult`
    * Vậy chúng ta sẽ dựa vào điều kiện có postId hoặc không có (tức đang trong chế độ edit hay không) để show lỗi
@@ -77,8 +79,12 @@ export default function CreatePost() {
     }
   }
 
+  const handleCancelEditingPost = () => {
+    dispatch(cancleEditPost())
+    // setFormData(initialState)
+  }
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} onReset={handleCancelEditingPost}>
       <div className='mb-6'>
         <label htmlFor='title' className='mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300'>
           Title
