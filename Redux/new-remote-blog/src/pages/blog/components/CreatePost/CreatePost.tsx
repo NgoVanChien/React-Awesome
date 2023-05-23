@@ -25,20 +25,27 @@ type FormError =
     }
   | null
 
+// add là 1 function, addPostrResult là 1 object
 export default function CreatePost() {
   const [formData, setFormData] = useState<Omit<Post, 'id'> | Post>(initialState)
   const [addPost, addPostResult] = useAddPostMutation()
-  // add là 1 function, addPostrResult là 1 object
   const postId = useSelector((state: RootState) => state.blog.postId)
+
+  // data vs currentData
+  // data: là kết quả mới nhất
+  // currentData: cũng là kết quả mới nhất, nhưng khi thay đổi tham số của function useGetPostQuery
+  // thì currentData sẽ reset lại undefined và sẽ được set lại khi fetch xong.
+
   // 2.2 Refetch : refetchOnMountOrArgChange - no catching
   // 3.  pollingInterval:
-  const { data, refetch } = useGetPostQuery(postId, {
+
+  const { currentData, refetch } = useGetPostQuery(postId, {
     skip: !postId,
-    refetchOnMountOrArgChange: 5
+    refetchOnFocus: false
+    // refetchOnMountOrArgChange: 5
     // pollingInterval: 2000
   })
   const [updatePost, updatePostResult] = useUpdatePostMutation()
-
   const dispatch = useDispatch()
   /**
    * Lỗi có thể đến từ `addPostResult` hoặc `updatePostResult`
@@ -49,7 +56,14 @@ export default function CreatePost() {
    */
 
   const errorForm: FormError = useMemo(() => {
-    const errorResult = postId ? updatePostResult.error : addPostResult.error
+    let errorResult = null
+    if (postId && postId === updatePostResult.originalArgs?.id) {
+      errorResult = updatePostResult.error
+    } else if (!postId && addPostResult.error) {
+      errorResult = addPostResult.error
+    }
+    // const errorResult = postId ? updatePostResult.error : addPostResult.error
+
     // Vì errorResult có thể là FetchBaseQueryError | SerializedError | undefined, mỗi kiểu lại có cấu trúc khác nhau
     // nên chúng ta cần kiểm tra để hiển thị cho đúng
     if (isEntityError(errorResult)) {
@@ -61,10 +75,10 @@ export default function CreatePost() {
   }, [postId, updatePostResult, addPostResult])
 
   useEffect(() => {
-    if (data) {
-      setFormData(data)
+    if (currentData) {
+      setFormData(currentData)
     }
-  }, [data])
+  }, [currentData])
   // console.log(data)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -85,13 +99,15 @@ export default function CreatePost() {
     }
   }
 
-  const handleCancelEditingPost = () => {
+  // Handle Cancel Update Post
+  const handleReset = () => {
+    setFormData(initialState)
     dispatch(cancleEditPost())
-    // setFormData(initialState)
+    updatePostResult.reset()
   }
   return (
-    <form onSubmit={handleSubmit} onReset={handleCancelEditingPost}>
-      <button
+    <form onSubmit={handleSubmit} onReset={handleReset}>
+      {/* <button
         className='group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 p-0.5 text-sm font-medium text-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300 group-hover:from-purple-600 group-hover:to-blue-500 dark:text-white dark:focus:ring-blue-800'
         type='button'
         onClick={() => refetch()} // 2.1 function refetch - catching
@@ -99,7 +115,7 @@ export default function CreatePost() {
         <span className='relative rounded-md bg-white px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-opacity-0 dark:bg-gray-900'>
           Force Fetch
         </span>
-      </button>
+      </button> */}
       <div className='mb-6'>
         <label htmlFor='title' className='mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300'>
           Title
