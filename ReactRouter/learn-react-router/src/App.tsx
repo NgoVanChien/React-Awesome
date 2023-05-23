@@ -38,17 +38,16 @@ function App() {
   return (
     <div className='App'>
       <MainLayout>
+        {/* cách 1 */}
         {elements}
-        {/* <Routes>
-          <Route path='/' element={<Dashboard />} />
+        {/* cách 2 */}
+        <Routes>
+          {/* <Route path='/' element={<Dashboard />} />
           <Route path='/about' element={<About />} />
-          <Route path='/staff/*' element={<Staff />}></Route> */}
+          <Route path='/staff/*' element={<Staff />}></Route>
 
-        {/* <Route path='/Staff' element={<Staff />} />
-          <Route path='/Staff/:id' element={<StaffItem />} />
-          <Route path='/Staff/add' element={<AddStaff />} /> */}
-        {/* <Route path='/*' element={<NotFound />} />
-        </Routes> */}
+          <Route path='/*' element={<NotFound />} /> */}
+        </Routes>
       </MainLayout>
     </div>
   )
