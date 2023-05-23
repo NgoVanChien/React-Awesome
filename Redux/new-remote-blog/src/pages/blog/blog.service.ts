@@ -48,7 +48,15 @@ export const blogApi = createApi({
   reducerPath: 'blogApi', // Tên field trong Redux State
   tagTypes: ['Posts'], // Những kiểu tag cho phép dùng trong blogApi
   keepUnusedDataFor: 10,
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:4000/' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'http://localhost:4000/'
+    // Custom Header
+
+    // prepareHeaders(headers) {
+    //   headers.set('Authorization', 'Bearer ABC')
+    //   return headers
+    // }
+  }),
   // global configuaration on the api
   // 2.3. refetch : refetchOnFocus
   // 2.4. refetch : refetchOnFocus
@@ -119,7 +127,16 @@ export const blogApi = createApi({
       invalidatesTags: (result, error, body) => (error ? [] : [{ type: 'Posts', id: 'LIST' }])
     }),
     getPost: build.query<Post, string>({
-      query: (id) => `posts/${id}`
+      query: (id) => ({
+        url: `posts/${id}`,
+        headers: {
+          hello: 'Galvin'
+        },
+        params: {
+          first_name: 'Alan',
+          'last-name': 'Otis'
+        }
+      })
     }),
     updatePost: build.mutation<Post, { id: string; body: Post }>({
       query(data) {
