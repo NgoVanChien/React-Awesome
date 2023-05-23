@@ -6,7 +6,7 @@ interface Props {
 
 const ExtraContent = () => {
   const location = useLocation()
-  console.log(location)
+  // console.log(location)
   return <div className='text-red-600'>URL is About </div>
 }
 
@@ -54,9 +54,9 @@ export default function MainLayout({ children }: Props) {
               </NavLink>
             </li>
           </ul>
-          <Routes location='/about'>
+          {/* <Routes location='/about'>
             <Route path='/about' element={<ExtraContent />} />
-          </Routes>
+          </Routes> */}
         </div>
       </aside>
       <main className='col-span-3 h-full px-3 py-4'>{children}</main>
