@@ -1,4 +1,7 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, Route, Routes } from 'react-router-dom'
+import AddStaff from 'components/AddStaff'
+import StaffItem from 'components/StaffItem'
+import StaffList from 'components/StaffList'
 
 export default function Staff() {
   return (
@@ -8,7 +11,8 @@ export default function Staff() {
         <ul className='-mb-px flex flex-wrap'>
           <li className='mr-2'>
             <NavLink
-              to='/staff/list'
+              to='/staff'
+              end
               className={({ isActive }) =>
                 `inline-block rounded-t-lg border-b-2 p-4 ${
                   isActive ? ': border-blue-600 text-blue-600' : ' hover:border-gray-300 hover:text-gray-600 '
@@ -34,9 +38,15 @@ export default function Staff() {
           </li>
         </ul>
       </div>
+      <Routes>
+        <Route path=':id' element={<StaffItem />} />
+        <Route path='add' element={<AddStaff />} />
+        <Route index element={<StaffList />} />
+      </Routes>
+
+      {/*Tách Nested Route thì không nhận được Outlet */}
       <Outlet context={{ profile: { name: 'Galvin' } }} />
       {/* <StaffList /> */}
-
       {/* <AddStaff /> */}
     </div>
   )
