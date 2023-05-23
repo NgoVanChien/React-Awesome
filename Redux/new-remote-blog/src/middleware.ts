@@ -1,4 +1,4 @@
-import { AnyAction, Middleware, MiddlewareAPI, isRejectedWithValue } from '@reduxjs/toolkit'
+import { AnyAction, Middleware, MiddlewareAPI, isRejected, isRejectedWithValue } from '@reduxjs/toolkit'
 import { isEntityError } from 'utils/helpers'
 import { toast } from 'react-toastify'
 
@@ -21,7 +21,19 @@ export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) =>
    * `isRejectedWithValue` là một function giúp chúng ta kiểm tra những action có rejectedWithValue = true từ createAsyncThunk
    * RTK Query sử dụng `createAsyncThunk` bên trong nên chúng ta có thể dùng `isRejectedWithValue` để kiểm tra lỗi 🎉
    */
-  // console.log(action)
+
+  // Option: Trong thực tế không bắt buộc đến mức này!
+  if (isRejected(action)) {
+    // console.log(action)
+    if (action.error.name === 'CustomError') {
+      // Những lỗi liên quan đến quá trình thực thi
+      toast.warn(action.error.message)
+    }
+    // if (!isEntityError(action.payload)) {
+    //   // Lỗi còn lại trữ lỗi 422: Có thể là từ SerializeErrorll
+    //   toast.warn(action.error.message)
+  }
+
   if (isRejectedWithValue(action)) {
     // Mỗi khi thực hiện query hoặc mutation mà bị lỗi thì nó sẽ chạy vào đây
     // Những lỗi từ server thì action nó mới có rejectedWithValue = true
@@ -31,9 +43,6 @@ export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) =>
     if (isPayloadErrorMessage(action.payload)) {
       // Lỗi reject từ server chỉ có message thôi!
       toast.warn(action.payload.data.error)
-    } else if (!isEntityError(action.payload)) {
-      // Lỗi còn lại trữ lỗi 422: Có thể là từ SerializeErrorll
-      toast.warn(action.error.message)
     }
   }
 
