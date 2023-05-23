@@ -12,6 +12,7 @@ export default function MainLayout({ children }: Props) {
             <li>
               <Link
                 to='/'
+                replace
                 className='flex items-center rounded-lg bg-gray-300 p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
               >
                 <span className='ml-3 font-bold'>Dashboard</span>
@@ -20,6 +21,7 @@ export default function MainLayout({ children }: Props) {
             <li>
               <Link
                 to='/staff'
+                replace
                 className='flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
               >
                 <span className='ml-3'>Staff</span>
@@ -28,6 +30,7 @@ export default function MainLayout({ children }: Props) {
             <li>
               <Link
                 to='/about'
+                replace
                 className='flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-300'
               >
                 <span className='ml-3'>About</span>
