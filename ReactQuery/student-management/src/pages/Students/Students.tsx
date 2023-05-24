@@ -3,20 +3,62 @@ import { Fragment, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Students as Studentstype } from 'types/students.type'
 
+import {
+  useQuery
+  // useMutation,
+  // useQueryClient,
+  // QueryClient,
+  // QueryClientProvider,
+} from '@tanstack/react-query'
+import { useQueryString } from 'utils/utils'
 export default function Students() {
-  const [students, setStudents] = useState<Studentstype>([])
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  useEffect(() => {
-    setIsLoading(true)
-    getStudents(1, 10)
-      .then((res) => {
-        // console.log(res)
-        setStudents(res.data)
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
-  }, [])
+  // fetch API với useEffect và Axios
+
+  // const [students, setStudents] = useState<Studentstype>([])
+  // const [isLoading, setIsLoading] = useState<boolean>(false)
+  // useEffect(() => {
+  //   setIsLoading(true)
+  //   getStudents(1, 10)
+  //     .then((res) => {
+  //       // console.log(res)
+  //       setStudents(res.data)
+  //     })
+  //     .finally(() => {
+  //       setIsLoading(false)
+  //     })
+  // }, [])
+
+  // ------------- Document TanStack ------------
+  // function Todos() {
+  //   // Access the client
+  //   const queryClient = useQueryClient()
+
+  //   // Queries
+  //   const query = useQuery({ queryKey: ['todos'], queryFn: getTodos })
+
+  //   // Mutations
+  //   const mutation = useMutation({
+  //     mutationFn: postTodo,
+  //     onSuccess: () => {
+  //       // Invalidate and refetch
+  //       queryClient.invalidateQueries({ queryKey: ['todos'] })
+  //     },
+  //   })
+
+  const queryString: { page?: string } = useQueryString()
+  const page = Number(queryString.page) || 1
+  // console.log(searchParmasObject)
+
+  // fetch API với useQuery và Axios
+
+  // Queries
+  const { data, isLoading } = useQuery({
+    queryKey: ['students,', page],
+    queryFn: () => getStudents(page, 10)
+  })
+  // console.log(result)
+
+  // return null
 
   return (
     <div>
@@ -64,7 +106,7 @@ export default function Students() {
                 </tr>
               </thead>
               <tbody>
-                {students.map((student) => (
+                {data?.data.map((student) => (
                   <tr
                     key={student.id}
                     className='border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600'
