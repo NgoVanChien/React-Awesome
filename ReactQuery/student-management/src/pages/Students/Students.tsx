@@ -50,12 +50,13 @@ export default function Students() {
   const queryString: { page?: string } = useQueryString()
   // console.log(searchParmasObject)
   const page = Number(queryString.page) || 1
-  const [_page] = useState(1)
+  // const [_page] = useState(1)
 
   // Queries
   const { data, isLoading } = useQuery({
-    queryKey: ['students,', { abc: _page }],
-    queryFn: () => getStudents(_page, 10)
+    queryKey: ['students,', page],
+    // Cache Change Detection: 	Deep Compare Keys (Stable Serialization) -- So sánh object cũ với object mới
+    queryFn: () => getStudents(page, 10)
   })
   // console.log(result)
 
