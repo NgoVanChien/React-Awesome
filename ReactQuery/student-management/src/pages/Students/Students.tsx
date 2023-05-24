@@ -12,7 +12,7 @@ import {
 } from '@tanstack/react-query'
 import { useQueryString } from 'utils/utils'
 export default function Students() {
-  // fetch API với useEffect và Axios
+  // CÁCH 1: fetch API với useEffect và Axios
 
   // const [students, setStudents] = useState<Studentstype>([])
   // const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -45,16 +45,17 @@ export default function Students() {
   //     },
   //   })
 
-  const queryString: { page?: string } = useQueryString()
-  const page = Number(queryString.page) || 1
-  // console.log(searchParmasObject)
+  // CÁCH 2: fetch API với useQuery và Axios
 
-  // fetch API với useQuery và Axios
+  const queryString: { page?: string } = useQueryString()
+  // console.log(searchParmasObject)
+  const page = Number(queryString.page) || 1
+  const [_page] = useState(1)
 
   // Queries
   const { data, isLoading } = useQuery({
-    queryKey: ['students,', page],
-    queryFn: () => getStudents(page, 10)
+    queryKey: ['students,', { abc: _page }],
+    queryFn: () => getStudents(_page, 10)
   })
   // console.log(result)
 
