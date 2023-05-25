@@ -30,7 +30,7 @@ export default function AddStudent() {
   const isAddMode = Boolean(addMatch)
   // console.log(match)
 
-  const { mutate, error, data, reset } = useMutation({
+  const { mutate, mutateAsync, error, data, reset } = useMutation({
     mutationFn: (body: FormStateType) => {
       // handle data here
       return addStudent(body)
@@ -57,13 +57,28 @@ export default function AddStudent() {
   }
 
   // -------     ADD STUDENT với useMutation    ------
-  const hanldeSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const hanldeSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
-    mutate(formState)
+    try {
+      const data = await mutateAsync(formState)
+      setFormState(initialFormState)
+      console.log('data', data)
+    } catch (error) {
+      console.log('error', error)
+    }
+    // mutate(formState, {
+    //   onSuccess: () => {
+    //     setFormState(initialFormState)
+    //   }
+    // })
   }
 
   // mutate là 1 async function nhưng không phải là Promise
+  // nên không dùng cách này để reset form sau khi add
+  // Vì đang gọi Api Post thì Form đã được reset
+  // mutate(formState)
+  // setFormState(initialFormState)
+  // })
 
   return (
     <div>
