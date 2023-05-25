@@ -11,6 +11,10 @@ import {
   // QueryClientProvider,
 } from '@tanstack/react-query'
 import { useQueryString } from 'utils/utils'
+import classNames from 'classnames'
+
+const LIMIT = 10
+
 export default function Students() {
   // CÁCH 1: fetch API với useEffect và Axios
 
@@ -48,17 +52,17 @@ export default function Students() {
   // CÁCH 2: fetch API với useQuery và Axios
 
   const queryString: { page?: string } = useQueryString()
-  // console.log(searchParmasObject)
   const page = Number(queryString.page) || 1
   // const [_page] = useState(1)
 
   // Queries
   const { data, isLoading } = useQuery({
     queryKey: ['students,', page],
-    // Cache Change Detection: 	Deep Compare Keys (Stable Serialization) -- So sánh object cũ với object mới
-    queryFn: () => getStudents(page, 10)
+    queryFn: () => getStudents(page, LIMIT)
   })
-  // console.log(result)
+  const totalCountStudents = data?.headers['x-total-count']
+  const totalPage = Math.ceil(totalCountStudents / LIMIT)
+  // console.log(totalPage)
 
   // return null
 
@@ -136,29 +140,63 @@ export default function Students() {
             </table>
           </div>
 
+          {/* // ----- Pagination -------- */}
+
           <div className='mt-6 flex justify-center'>
             <nav aria-label='Page navigation example'>
               <ul className='inline-flex -space-x-px'>
                 <li>
-                  <span className='cursor-not-allowed rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'>
-                    Previous
-                  </span>
+                  {page === 1 ? (
+                    <span className='cursor-not-allowed rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700'>
+                      Previous
+                    </span>
+                  ) : (
+                    <Link
+                      className=' rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                      to={`/students?page=${page - 1}`}
+                    >
+                      Previous
+                    </Link>
+                  )}
                 </li>
+
+                {/* //   Fill and Map */}
+                {Array(totalPage)
+                  .fill(0)
+                  .map((_, index) => {
+                    const pageNumber = index + 1
+                    const isActive = page === pageNumber
+                    return (
+                      <li key={pageNumber}>
+                        <Link
+                          className={classNames(
+                            'border border-gray-300  bg-white px-3 py-2 leading-tight  text-gray-500  hover:bg-gray-100   hover:text-gray-700',
+                            {
+                              'bg-blue-500 text-blue-800 ': isActive,
+                              'bg-white to-gray-400': !isActive
+                            }
+                          )}
+                          to={`/students?page=${pageNumber}`}
+                        >
+                          {pageNumber}
+                        </Link>
+                      </li>
+                    )
+                  })}
+
                 <li>
-                  <a
-                    className='border border-gray-300 bg-white bg-white px-3 py-2 leading-tight text-gray-500 text-gray-500  hover:bg-gray-100 hover:bg-gray-100 hover:text-gray-700 hover:text-gray-700'
-                    href='/students?page=8'
-                  >
-                    1
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className='rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
-                    href='/students?page=1'
-                  >
-                    Next
-                  </a>
+                  {page === totalPage ? (
+                    <span className='cursor-not-allowed rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'>
+                      Next
+                    </span>
+                  ) : (
+                    <Link
+                      className='rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                      to={`/students?page=${page + 1}`}
+                    >
+                      Next
+                    </Link>
+                  )}
                 </li>
               </ul>
             </nav>
