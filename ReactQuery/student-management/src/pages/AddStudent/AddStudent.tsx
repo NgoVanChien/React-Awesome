@@ -1,12 +1,13 @@
-import { useMutation } from '@tanstack/react-query'
-import { addStudent } from 'apis/students.api'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { addStudent, getStudent, updateStudent } from 'apis/students.api'
 import { isAxiosError } from 'axios'
 
 import { useMemo, useState } from 'react'
-import { useMatch } from 'react-router-dom'
+import { useMatch, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { Student } from 'types/students.type'
 
-type FormStateType = Omit<Student, 'id'>
+type FormStateType = Omit<Student, 'id'> | Student
 
 const initialFormState: FormStateType = {
   avatar: '',
@@ -29,48 +30,68 @@ export default function AddStudent() {
   const addMatch = useMatch('/students/add')
   const isAddMode = Boolean(addMatch)
   // console.log(match)
+  // const param = useParams()
+  // console.log(param);
+  const { id } = useParams()
+  // console.log(id)
 
-  const { mutate, mutateAsync, error, data, reset } = useMutation({
+  const addStudentMutation = useMutation({
     mutationFn: (body: FormStateType) => {
-      // handle data here
       return addStudent(body)
     }
   })
 
-  console.log(error)
+  useQuery({
+    queryKey: ['student', id],
+    queryFn: () => getStudent(id as string),
+    enabled: id !== undefined,
+    onSuccess: (data) => {
+      setFormState(data.data)
+      // Khi id !== undefined thì queryFn mới dc thực thi
+    }
+  })
+
+  const updateStudentMutation = useMutation({
+    mutationFn: (_) => updateStudent(id as string, formState as Student)
+  })
 
   // -----   Xử lý lỗi 422  khi submit Form bị lỗi   -----
   const errorForm: FormError = useMemo(() => {
-    if (isAxiosError<{ error: FormError }>(error) && error.response?.status === 422) {
-      return error.response?.data.error
+    if (
+      isAxiosError<{ error: FormError }>(addStudentMutation.error) &&
+      addStudentMutation.error.response?.status === 422
+    ) {
+      return addStudentMutation.error.response?.data.error
     }
     return null
-  }, [error])
+  }, [addStudentMutation.error])
 
   // Dùng currying
   const handleChange = (name: keyof FormStateType) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormState((prev) => ({ ...prev, [name]: event.target.value }))
     // -----         Reset data và error             ------
-    if (data || error) {
-      reset()
+    if (addStudentMutation.data || addStudentMutation.error) {
+      addStudentMutation.reset()
     }
   }
 
   // -------     ADD STUDENT với useMutation    ------
-  const hanldeSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const hanldeSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    try {
-      const data = await mutateAsync(formState)
-      setFormState(initialFormState)
-      console.log('data', data)
-    } catch (error) {
-      console.log('error', error)
+    if (isAddMode) {
+      addStudentMutation.mutate(formState, {
+        onSuccess: () => {
+          setFormState(initialFormState)
+          toast.success('Add Thanh Cong!')
+        }
+      })
+    } else {
+      updateStudentMutation.mutate(undefined, {
+        onSuccess: (_) => {
+          toast.success('Update Thanh Cong!')
+        }
+      })
     }
-    // mutate(formState, {
-    //   onSuccess: () => {
-    //     setFormState(initialFormState)
-    //   }
-    // })
   }
 
   // mutate là 1 async function nhưng không phải là Promise
@@ -86,7 +107,6 @@ export default function AddStudent() {
       <form className='mt-6' onSubmit={hanldeSubmit}>
         <div className='group relative z-0 mb-6 w-full'>
           <input
-            //
             type='text'
             name='floating_email'
             id='floating_email'
@@ -222,9 +242,9 @@ export default function AddStudent() {
               id='avatar'
               className='peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent px-0 py-2.5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500'
               placeholder=' '
+              value={formState.avatar}
+              onChange={handleChange('avatar')}
               required
-              value={formState.btc_address}
-              onChange={handleChange('btc_address')}
             />
             <label
               htmlFor='avatar'
@@ -241,6 +261,8 @@ export default function AddStudent() {
               className='peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent px-0 py-2.5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500'
               placeholder=' '
               required
+              value={formState.btc_address}
+              onChange={handleChange('btc_address')}
             />
             <label
               htmlFor='btc_address'
@@ -255,7 +277,7 @@ export default function AddStudent() {
           type='submit'
           className='w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto'
         >
-          Submit
+          {isAddMode ? 'Add' : 'Edit'}
         </button>
       </form>
     </div>
