@@ -1,8 +1,8 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { addStudent, getStudent, updateStudent } from 'apis/students.api'
 import { isAxiosError } from 'axios'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useMatch, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Student } from 'types/students.type'
@@ -19,6 +19,12 @@ const initialFormState: FormStateType = {
   last_name: ''
 }
 
+const gender = {
+  male: 'Male',
+  female: 'Female',
+  other: 'Other'
+}
+
 type FormError =
   | {
       [key in keyof FormStateType]: string
@@ -29,6 +35,7 @@ export default function AddStudent() {
   const [formState, setFormState] = useState<FormStateType>(initialFormState)
   const addMatch = useMatch('/students/add')
   const isAddMode = Boolean(addMatch)
+  const queryClient = useQueryClient()
   // console.log(match)
   // const param = useParams()
   // console.log(param);
@@ -41,18 +48,30 @@ export default function AddStudent() {
     }
   })
 
-  useQuery({
+  const studentQuery = useQuery({
     queryKey: ['student', id],
     queryFn: () => getStudent(id as string),
     enabled: id !== undefined,
-    onSuccess: (data) => {
-      setFormState(data.data)
-      // Khi id !== undefined thì queryFn mới dc thực thi
-    }
+    staleTime: 10 * 1000
+    // onSuccess: (data) => {
+    //   setFormState(data.data)
+    //   // Khi id !== undefined thì queryFn mới dc thực thi
+    // }
   })
 
+  useEffect(() => {
+    if (studentQuery.data) {
+      setFormState(studentQuery.data.data)
+    }
+  }, [studentQuery.data])
+
+  // Cập nhật data thông qua setQueryData()
+
   const updateStudentMutation = useMutation({
-    mutationFn: (_) => updateStudent(id as string, formState as Student)
+    mutationFn: (_) => updateStudent(id as string, formState as Student),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['student', id], data)
+    }
   })
 
   // -----   Xử lý lỗi 422  khi submit Form bị lỗi   -----
@@ -101,7 +120,7 @@ export default function AddStudent() {
 
   return (
     <div>
-      <h1 className='text-lg'>{isAddMode ? 'Add' : 'Edit'}</h1>
+      <h1 className='text-lg'>{isAddMode ? 'Add Student' : 'Edit Student'}</h1>
       <form className='mt-6' onSubmit={hanldeSubmit}>
         <div className='group relative z-0 mb-6 w-full'>
           <input
@@ -136,8 +155,10 @@ export default function AddStudent() {
                   id='gender-1'
                   type='radio'
                   name='gender'
-                  value='male'
-                  checked={formState.gender === 'male'}
+                  // value='male'
+                  // checked={formState.gender === 'male'}
+                  value={gender.male}
+                  checked={formState.gender === gender.male}
                   onChange={handleChange('gender')}
                   className='h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600'
                 />
@@ -150,8 +171,8 @@ export default function AddStudent() {
                   id='gender-2'
                   type='radio'
                   name='gender'
-                  value='female'
-                  checked={formState.gender === 'female'}
+                  value={gender.female}
+                  checked={formState.gender === gender.female}
                   onChange={handleChange('gender')}
                   className='h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600'
                 />
@@ -163,9 +184,9 @@ export default function AddStudent() {
                 <input
                   id='gender-3'
                   type='radio'
-                  name='gender'
+                  name={gender.other}
                   value='orther'
-                  checked={formState.gender === 'orther'}
+                  checked={formState.gender === gender.other}
                   onChange={handleChange('gender')}
                   className='h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600'
                 />
@@ -275,7 +296,7 @@ export default function AddStudent() {
           type='submit'
           className='w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto'
         >
-          {isAddMode ? 'Add' : 'Edit'}
+          {isAddMode ? 'Add' : 'Upadate'}
         </button>
       </form>
     </div>

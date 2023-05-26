@@ -1,11 +1,12 @@
-import { deleteStudent, getStudents } from 'apis/students.api'
+import { deleteStudent, getStudent, getStudents } from 'apis/students.api'
 import { Fragment, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Students as Studentstype } from 'types/students.type'
 
 import {
   useMutation,
-  useQuery
+  useQuery,
+  useQueryClient
   // useMutation,
   // useQueryClient,
   // QueryClient,
@@ -52,7 +53,7 @@ export default function Students() {
   //   })
 
   // CÁCH 2: fetch API với useQuery và Axios
-
+  const queryClient = useQueryClient()
   const queryString: { page?: string } = useQueryString()
   const page = Number(queryString.page) || 1
   // const [_page] = useState(1)
@@ -70,16 +71,25 @@ export default function Students() {
 
   // console.log('data', data?.data, 'isLoading', isLoading, 'isFetching', isFetching)
 
-  // return null
+  // refetch lại query thông qua cơ chế invalidateQueries
   const deleteStudentMutation = useMutation({
     mutationFn: (id: number | string) => deleteStudent(id),
     onSuccess: (_, id) => {
+      // onSuccess: (result, variables, context)
       toast.success(`Xoá thành công student với id là ${id}`)
+      queryClient.invalidateQueries({ queryKey: ['students', page], exact: true })
     }
   })
 
   const handleDelete = (id: number) => {
     deleteStudentMutation.mutate(id)
+  }
+
+  const handlePrefetchStudent = (id: number) => {
+    queryClient.prefetchQuery(['student', String(id)], {
+      queryFn: () => getStudent(id),
+      staleTime: 10 * 10000
+    })
   }
 
   return (
@@ -141,6 +151,7 @@ export default function Students() {
                   <tr
                     key={student.id}
                     className='border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600'
+                    onMouseEnter={() => handlePrefetchStudent(student.id)}
                   >
                     <td className='px-6 py-4'>{student.id}</td>
                     <td className='px-6 py-4'>
