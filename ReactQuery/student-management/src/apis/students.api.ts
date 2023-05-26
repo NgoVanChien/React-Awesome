@@ -16,4 +16,4 @@ export const addStudent = (student: Omit<Student, 'id'>) => http.post<Student>('
 
 export const updateStudent = (id: number | string, student: Student) => http.put<Student>(`/students/${id}`, student)
 
-export const deleteStudent = (id: string | number) => http.delete(`/students/${id}`)
+export const deleteStudent = (id: string | number) => http.delete<{}>(`/students/${id}`)
