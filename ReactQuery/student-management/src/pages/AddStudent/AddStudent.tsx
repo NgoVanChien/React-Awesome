@@ -57,14 +57,12 @@ export default function AddStudent() {
 
   // -----   Xử lý lỗi 422  khi submit Form bị lỗi   -----
   const errorForm: FormError = useMemo(() => {
-    if (
-      isAxiosError<{ error: FormError }>(addStudentMutation.error) &&
-      addStudentMutation.error.response?.status === 422
-    ) {
-      return addStudentMutation.error.response?.data.error
+    const error = isAddMode ? addStudentMutation.error : updateStudentMutation.error
+    if (isAxiosError<{ error: FormError }>(error) && error.response?.status === 422) {
+      return error.response?.data.error
     }
     return null
-  }, [addStudentMutation.error])
+  }, [addStudentMutation.error, isAddMode, updateStudentMutation.error])
 
   // Dùng currying
   const handleChange = (name: keyof FormStateType) => (event: React.ChangeEvent<HTMLInputElement>) => {
